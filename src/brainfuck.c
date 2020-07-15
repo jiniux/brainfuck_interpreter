@@ -22,6 +22,8 @@ typedef struct {
 #define INSTR_LOOP_S    0x7
 #define INSTR_LOOP_E    0x8
 
+// Gotta move all the declaration somewhere else.
+
 typedef struct bf_instruction
 {
     u_int8_t type;
