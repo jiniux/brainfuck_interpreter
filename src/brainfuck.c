@@ -50,7 +50,7 @@ struct bf_symbol {
     { ']', false, INSTR_LOOP_E }, 
 };
 
-u_int64_t get_symbol_repetion(char c, char *s) {
+u_int64_t get_symbol_repetition(char c, char *s) {
     u_int64_t count = 0;
     while (*s && *(s++) == c) 
         count++;
@@ -146,7 +146,7 @@ dynarray_t* decode_src(char *src) {
             bf_instruction_t *instr = calloc(1, sizeof(bf_instruction_t));
 
             u_int64_t repeat_for = symbol.optimized ? 
-                    get_symbol_repetion(symbol.character, src) : 0;      
+                    get_symbol_repetition(symbol.character, src) : 0;      
                      
             src += instr->repeat_for = repeat_for;
             instr->type = symbol.type;
@@ -210,16 +210,6 @@ int main(int argc, char* argv[]) {
     src[size - 1] = '\0';
 
     dynarray_t* instructions = decode_src(src);
-
-    printf("%d\n", instructions->count);
-
-    for (size_t i = 0; i < 100; i++)
-    {
-        printf("%p %d\n", &((bf_instruction_t*)instructions->data)[i], 
-            ((bf_instruction_t*)instructions->data)[i].type);
-    }
-    
-
     exec(&vm, (bf_instruction_t*)instructions->data);
 
     dynarray_free(instructions);
