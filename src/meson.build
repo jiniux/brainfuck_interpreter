@@ -1,0 +1,1 @@
+src_files = files(['brainfuck.c', 'dynarray.c'])
