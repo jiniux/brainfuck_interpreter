@@ -8,8 +8,6 @@
 
 typedef struct {
     u_int8_t    cells[65535];
-    u_int16_t   cell_index;
-    u_int64_t   program_counter;
 } bf_vm;
 
 #define BF_INSTR_EMPTY     0x0
@@ -21,6 +19,8 @@ typedef struct {
 #define BF_INSTR_GETC      0x6
 #define BF_INSTR_LOOP_S    0x7
 #define BF_INSTR_LOOP_E    0x8
+
+#define BF_OPT_LOOP_TO_ZERO 0x9
 
 // Gotta move all the declaration somewhere else.
 
@@ -37,14 +37,19 @@ typedef struct bf_instruction
     
 } bf_instruction_t;
 
-const struct bf_symbol {
-    char character;
+typedef struct bf_symbol {
+    const char* string;
     bool optimized;
     u_int8_t type;
-} bf_symbols[];
+} bf_symbol_t;
+
+typedef struct routine_result {
+    int index;
+    int current_cell;
+} routine_result_t;
 
 dynarray_t* bf_decode_src(char *src);
-void bf_exec(bf_vm* vm, bf_instruction_t* instr);
+u_int16_t bf_routine(bf_vm* vm, bf_instruction_t* instr, u_int16_t offset);
 u_int64_t bf_get_error();
 
 #define BF_ERR_UNEXPECTED_CLOSED_BRACKET    10

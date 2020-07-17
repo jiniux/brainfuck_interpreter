@@ -25,3 +25,7 @@ For example, `>>>` becomes `ptr+=3`.
 ### Position jump
 
 Unlike some other interpreter, this one automatically jumps at the end and at the start of cycles without crossing them entirely. 
+
+## Loops to zero 
+
+When `[-]` or `[+]` (loops that continues till the current cell becomes zero) occur, the interpreter directly sets `*ptr` to 0.
