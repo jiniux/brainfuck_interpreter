@@ -128,6 +128,7 @@ dynarray_t* bf_decode_src(char *src)
         bf_instruction_t* instr = &dynarray_at(instructions, bf_instruction_t, i);
 
         if (instr->type == BF_INSTR_LOOP_E && instr->cicle_end_index == NULL) {
+            current_error_code = BF_ERR_UNEXPECTED_CLOSED_BRACKET;
             return NULL;
         }
 
@@ -135,6 +136,7 @@ dynarray_t* bf_decode_src(char *src)
             int result = find_cycle_end(&instr[1], instructions->count - (i + 1));
 
             if (result == -1) {
+                current_error_code = BF_ERR_BRACKET_NOT_CLOSED;
                 return NULL;
             }
 
