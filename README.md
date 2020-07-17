@@ -7,8 +7,8 @@ Optimized lightweight Brainfuck interpreter made in C (needless to say: from scr
 It requires [The Meson Build System](https://github.com/mesonbuild/meson) to be compiled. Once you have it installed, do:
 
 ```
-$ meson build
-$ meson compile -C build
+$ meson build/
+$ meson compile -C build/
 ```
 
 Then, inside the `build` directory you will find the binaries.
