@@ -21,6 +21,7 @@ typedef struct {
 #define BF_INSTR_LOOP_E    0x8
 
 #define BF_OPT_LOOP_TO_ZERO 0x9
+//#define BF_OPT_MOVE_CELL    0xA
 
 // Gotta move all the declaration somewhere else.
 
@@ -37,11 +38,12 @@ typedef struct bf_instruction
     
 } bf_instruction_t;
 
-typedef struct bf_symbol {
+typedef struct bf_pattern {
     const char* string;
+    bool special;
     bool optimized;
     u_int8_t type;
-} bf_symbol_t;
+} bf_pattern_t;
 
 typedef struct routine_result {
     int index;

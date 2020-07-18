@@ -93,20 +93,41 @@ u_int64_t bf_get_error() {
     return current_error_code;
 }
 
-dynarray_t* bf_decode_src(char *src)
-{
-    static const bf_symbol_t bf_symbols[] = {
-        { "[+]", false, BF_OPT_LOOP_TO_ZERO },
-        { "[-]", false, BF_OPT_LOOP_TO_ZERO },
+/*typedef struct bf_pattern_cell {
+    char character;
+    u_int16_t pos;
+} bf_pattern_cell_t; */
 
-        { ">", true,  BF_INSTR_RIGHT  },
-        { "<", true,  BF_INSTR_LEFT   },
-        { "+", true,  BF_INSTR_ADD    },
-        { "-", true,  BF_INSTR_SUB    },
-        { ".", false, BF_INSTR_PUTC   },
-        { ",", false, BF_INSTR_GETC   },
-        { "[", false, BF_INSTR_LOOP_S },
-        { "]", false, BF_INSTR_LOOP_E },
+int starts_with(const char *restrict string, const char *restrict prefix)
+{
+    int len = 0;
+
+    while(*prefix)
+    {
+        if(*prefix++ != *string++)
+            return 0;
+
+        ++len;
+    }
+
+    return len;
+}
+
+dynarray_t* bf_decode_src(char *src) {
+    static const bf_pattern_t bf_patterns[] = {
+        { "[+]", false, false, BF_OPT_LOOP_TO_ZERO },
+        { "[-]", false, false, BF_OPT_LOOP_TO_ZERO },
+
+        { "i[-]x[-]y[x+i+y-]i[y+i-]", true, false, BF_OPT_LOOP_TO_ZERO },
+
+        { ">", false, true,  BF_INSTR_RIGHT  },
+        { "<", false, true,  BF_INSTR_LEFT   },
+        { "+", false, true,  BF_INSTR_ADD    },
+        { "-", false, true,  BF_INSTR_SUB    },
+        { ".", false, false, BF_INSTR_PUTC   },
+        { ",", false, false, BF_INSTR_GETC   },
+        { "[", false, false, BF_INSTR_LOOP_S },
+        { "]", false, false, BF_INSTR_LOOP_E },
     };
 
     dynarray_t* instructions = dynarray_new(sizeof(bf_instruction_t));
@@ -115,22 +136,21 @@ dynarray_t* bf_decode_src(char *src)
     
     char temp;
     while (temp = *(src++)) 
-    for (size_t i = 0; i < sizeof(bf_symbols) / sizeof(struct bf_symbol); i++)
+    for (size_t i = 0; i < sizeof(bf_patterns) / sizeof(bf_pattern_t); i++)
     {
-        const char* string = bf_symbols[i].string; 
-        int length = strlen(string);
+        bf_pattern_t* pattern = &bf_patterns[i];
 
-        if (strncmp(string, src-1, length) == 0) {
-            struct bf_symbol symbol = bf_symbols[i];
-            bf_instruction_t *instr = calloc(1, sizeof(bf_instruction_t));
+        int len;
+        if (len = starts_with(src - 1, pattern->string)) {
+            bf_instruction_t instr = { BF_INSTR_EMPTY, 0, { NULL } };
 
-            u_int64_t repeat_for = symbol.optimized ? 
-                    get_symbol_repetition(symbol.string[0], src) : 0;
+            u_int64_t repeat_for = pattern->optimized ? 
+                    get_symbol_repetition(pattern->string[0], src) : 0;
 
-            src += (length - 1) + (instr->repeat_for = repeat_for);
-            instr->type = symbol.type;
+            src += (len - 1) + (instr.repeat_for = repeat_for);
+            instr.type = pattern->type;
 
-            dynarray_append_array(instructions, instr, 1); break;
+            dynarray_append_array(instructions, &instr, 1); break;
         }
     }
 
