@@ -61,19 +61,17 @@ u_int16_t bf_routine(bf_vm *vm, bf_instruction_t *instr, u_int16_t index) {
             goto LCONTINUE;
 
         LBF_INSTR_LOOP_S:
-            if (vm->cells[index] != 0) {
-                index = bf_routine(vm, &instr[1], index);
+            if (vm->cells[index] == 0) {
+                instr = instr->cicle_end_index;
             }
-
-            instr = instr->cicle_end_index;
+            
             goto LCONTINUE;
 
         LBF_INSTR_LOOP_E:
             if (vm->cells[index] != 0) {
                 instr = instr->cicle_start_index;
-            } else {
-                return index;
             }
+            
             goto LCONTINUE;
 
         LBF_OPT_LOOP_TO_ZERO:

@@ -4,8 +4,7 @@ project('brainfuck_interpreter', 'c',
 subdir('src/')
 
 
-exe = executable('brainfuck_interpreter', src_files, c_args: ['-O3', '-march=native'])
-
+exe = executable('brainfuck_interpreter', src_files, c_args: ['-O3'])
 test('Hello world', exe, args : ['../tests/hello_world.btest'], is_parallel : false)
 test('Towers of Hanoi', exe, args : ['../tests/hanoi.btest'], is_parallel : false)
 test('Mandelbrot', exe, args : ['../tests/mandelbrot.btest'], is_parallel : false)
