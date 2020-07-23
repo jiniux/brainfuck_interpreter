@@ -30,6 +30,6 @@ Unlike some other interpreter, this one automatically jumps at the end and at th
 
 When `[-]` or `[+]` (loops that continues till the current cell becomes zero) occur, the interpreter directly sets `*ptr` to 0.
 
-# Special thanks
+## Special thanks
 
 Thanks to [GaggiX](https://github.com/GaggiX) for helping. 
