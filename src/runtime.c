@@ -116,7 +116,7 @@ dynarray_t* bf_decode_src(char *src) {
         { "[+]", false, false, BF_OPT_LOOP_TO_ZERO },
         { "[-]", false, false, BF_OPT_LOOP_TO_ZERO },
 
-        { "i[-]x[-]y[x+i+y-]i[y+i-]", true, false, BF_OPT_LOOP_TO_ZERO },
+/*      { "i[-]x[-]y[x+i+y-]i[y+i-]", true, false, BF_OPT_LOOP_TO_ZERO }, */
 
         { ">", false, true,  BF_INSTR_RIGHT  },
         { "<", false, true,  BF_INSTR_LEFT   },

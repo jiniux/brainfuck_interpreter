@@ -1,7 +1,7 @@
 #ifndef DYNARRAY_H
 #define DYNARRAY_H
 
-#define DYNARRAY_INITIAL_CAP 64
+#define DYNARRAY_INITIAL_CAP 4096
 
 typedef struct dynarray {
     unsigned int count;
