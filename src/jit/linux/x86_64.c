@@ -3,8 +3,8 @@
 #include <string.h> //memcpy
 #include <stdlib.h> //calloc - realloc
 
-#include "compiler.h"
-#include "../dynarray.h"
+#include "../compiler.h"
+#include "../../dynarray.h"
 
 // Currently only supports x86_64
 // Gotta do this more modular.

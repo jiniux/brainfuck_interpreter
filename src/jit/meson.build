@@ -1,9 +1,12 @@
-supported_archs = ['x86_64']
+supported_archs = { 'linux': ['x86_64'] }
 
-if supported_archs.contains(target_machine.cpu_family()) and target_machine.system() == 'linux'
-    file = 'compiler_' + target_machine.cpu_family() + '.c'
+sys = target_machine.system()
+arch = target_machine.cpu_family()
+
+if sys in supported_archs and supported_archs[sys].contains(arch)
+    file = sys + '/' + arch + '.c'
 else
-    file = 'compiler_null.c'
+    file = 'null_arch.c'
 endif
 
 src_files += files([file])
