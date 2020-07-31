@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
         return 3;
     }
 
-    bf_routine(&vm, (bf_instruction_t*)instructions->data, 0);
+    bf_jit(&vm, (bf_instruction_t*)instructions->data);
 
     dynarray_free(instructions);
     free(src);

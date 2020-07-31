@@ -98,18 +98,19 @@ void write_instructions(dynarray_t *array, bf_instruction_t **c_instruction) {
                                 append_const("\x0f\x84");
                                 append_int(0, int32_t);
 
-                                int* j_address_pos = (int*)&dynarray_at(array, char, array->count - 4);
+                                int j_address_pos = array->count - 4;
                                 write_instructions(array, c_instruction);
 
-                                char* current_pos = &dynarray_at(array, char, array->count);
+                                int current_pos = array->count;
                                 append_const("\xe9");
-                                append_int((int)(((char*)j_address_pos - 9) - (current_pos + 5)), int32_t)
-                                
-                                *j_address_pos = (int)((current_pos + 5) - (((char*)j_address_pos - 2) + 6));
+                                append_int((int)((j_address_pos - 9) - (current_pos + 5)), int32_t)
+
+                                *((int*)(array->data + j_address_pos)) = (current_pos + 5) - ((j_address_pos - 2) + 6);
 
                                 break;
 
         case BF_INSTR_LOOP_E:   return;
+        
         case BF_OPT_LOOP_TO_ZERO: append_const("\xc6\x04\x03\x00");
         }
         *c_instruction = &(*c_instruction)[1];
