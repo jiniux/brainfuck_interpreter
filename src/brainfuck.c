@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "jit.h"
+#include "jit/compiler.h"
+
 #include "dynarray.h"
 #include "utils.h"
 #include "runtime.h"
 
 int main(int argc, char* argv[]) {
     bf_vm vm; memset(&vm, 0x0, sizeof(bf_vm));
+    bool jit = false;
 
+    if (argc == 3 && strcmp(argv[2], "--jit") == 0) {
+        jit = true;
+    } 
     if (argc < 2) {
         fprintf(stderr, "Missing arguments. Usage: %s <src_file.bf>\n", argv[0]);
         
@@ -18,7 +23,7 @@ int main(int argc, char* argv[]) {
 
     FILE* file;
     if (!(file = fopen(argv[1], "r"))) {
-        fputs("There was an error while opening the file.", stderr);
+        fputs("There was an error while opening the file.\n", stderr);
 
         return 2;
     }
@@ -34,11 +39,11 @@ int main(int argc, char* argv[]) {
         switch (bf_get_error())
         {
         case BF_ERR_BRACKET_NOT_CLOSED:
-            fputs("ERROR: Bracket not closed.", stderr);
+            fputs("ERROR: Bracket not closed.\n", stderr);
             break;
         
         case BF_ERR_UNEXPECTED_CLOSED_BRACKET:
-            fputs("ERROR: Unexpected closed bracket.", stderr);
+            fputs("ERROR: Unexpected closed bracket.\n", stderr);
             break;
         
         default:
@@ -47,7 +52,12 @@ int main(int argc, char* argv[]) {
         return 3;
     }
 
-    bf_jit(&vm, (bf_instruction_t*)instructions->data);
+    if (jit) { 
+        bf_jit(&vm, (bf_instruction_t*)instructions->data);
+    }
+    else {
+        bf_routine(&vm, (bf_instruction_t*)instructions->data, 0);
+    } 
 
     dynarray_free(instructions);
     free(src);

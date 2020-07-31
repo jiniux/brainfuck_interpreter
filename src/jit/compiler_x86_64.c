@@ -3,8 +3,8 @@
 #include <string.h> //memcpy
 #include <stdlib.h> //calloc - realloc
 
-#include "runtime.h"
-#include "dynarray.h"
+#include "compiler.h"
+#include "../dynarray.h"
 
 // Currently only supports x86_64
 // Gotta do this more modular.
@@ -97,6 +97,8 @@ void write_instructions(dynarray_t *array, bf_instruction_t **c_instruction) {
 
                                 append_const("\x0f\x84");
                                 append_int(0, int32_t);
+
+                                // All the following hardcoded numbers are related to instruction sizes.
 
                                 int j_address_pos = array->count - 4;
                                 write_instructions(array, c_instruction);
