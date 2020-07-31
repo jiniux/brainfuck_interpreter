@@ -13,6 +13,12 @@ $ meson compile -C build/
 
 Then, inside the `build` directory you will find the binaries.
 
+## Features
+
+- `65535` 8-bit cells.
+- Bytecode parsing and optimization.
+- Optimized JIT compiler.
+
 ## Optimizations
 
 Currently the interpreter has the optimization features shown below. 
