@@ -1,1 +1,1 @@
-src_files = files(['utils.c', 'runtime.c', 'dynarray.c', 'brainfuck.c',])
+src_files = files(['utils.c', 'dynarray.c', 'runtime.c', 'jit.c', 'brainfuck.c',])

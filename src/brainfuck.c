@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "jit.h"
 #include "dynarray.h"
 #include "utils.h"
 #include "runtime.h"
@@ -11,7 +12,7 @@ int main(int argc, char* argv[]) {
 
     if (argc < 2) {
         fprintf(stderr, "Missing arguments. Usage: %s <src_file.bf>\n", argv[0]);
-
+        
         return 1;
     }
 

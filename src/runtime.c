@@ -24,7 +24,7 @@ static int find_cycle_end(bf_instruction_t* instructions, int count) {
     return -1;
 }
 
-u_int16_t bf_routine(bf_vm *vm, bf_instruction_t *instr, u_int16_t index) {
+void bf_routine(bf_vm *vm, bf_instruction_t *instr, u_int16_t index) {
     static void* jump_table[] = { 
         &&LCONTINUE, &&LBF_INSTR_RIGHT, &&LBF_INSTR_LEFT,
         &&LBF_INSTR_ADD, &&LBF_INSTR_SUB,
@@ -81,8 +81,6 @@ u_int16_t bf_routine(bf_vm *vm, bf_instruction_t *instr, u_int16_t index) {
         LCONTINUE:
             instr = &instr[1];
     }
-
-    return 0;
 }
 
 u_int64_t current_error_code = 0;
@@ -174,7 +172,6 @@ dynarray_t* bf_decode_src(char *src) {
         }
     }
     
-
     bf_instruction_t empty_instr = { 0 };
     dynarray_append_array(instructions, &empty_instr, 1);
 

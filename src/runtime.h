@@ -28,14 +28,13 @@ typedef struct {
 typedef struct bf_instruction
 {
     u_int8_t type;
-    u_int64_t repeat_for;
+    u_int16_t repeat_for;
 
     union
     {
         struct bf_instruction* cicle_start_index;
         struct bf_instruction* cicle_end_index;
     };
-    
 } bf_instruction_t;
 
 typedef struct bf_pattern {
@@ -51,7 +50,7 @@ typedef struct routine_result {
 } routine_result_t;
 
 dynarray_t* bf_decode_src(char *src);
-u_int16_t bf_routine(bf_vm* vm, bf_instruction_t* instr, u_int16_t offset);
+void bf_routine(bf_vm* vm, bf_instruction_t* instr, u_int16_t index);
 u_int64_t bf_get_error();
 
 #define BF_ERR_UNEXPECTED_CLOSED_BRACKET    10
