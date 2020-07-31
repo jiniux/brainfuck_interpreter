@@ -17,7 +17,23 @@ Then, inside the `build` directory you will find the binaries.
 
 - `65535` 8-bit cells.
 - Bytecode parsing and optimization.
-- Optimized JIT compiler.
+- Optimized integrated JIT compiler.
+
+## Usage 
+
+```
+$ brainfuck_interpreter <filename.bf> [--jit]
+```
+
+## Benchmarks
+
+The following tests were conducted on an **Intel Core i7-7700k 4.20GHz** processor; the program was compiled using **GCC 9.3.0** with the following flags: `-O3 -march=native`.
+
+| Program | Interpreter  | JIT compiled code |
+|---|---|---|---|---|
+| `mandelbrot.bf`  | `3.782s` | `1.714s` |
+| `hanoi.bf` | `0.356s` | `0.260s`
+| `project_euler_1.bf` | `13.902s` | `7.552s` 
 
 ## Optimizations
 
