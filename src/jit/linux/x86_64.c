@@ -25,65 +25,72 @@ void write_instructions(dynarray_t *array, bf_instruction_t **c_instruction) {
     while (1) {
         switch ((*c_instruction)->type)
         {
+                                // End of the function: pops all the registers.
         case BF_INSTR_EMPTY:    append_const(
                                     "\x5e"
-                                    "\x5f"
+                                    "\x5f" 
                                     "\x5a"
                                     "\x59"
                                     "\x5b"
                                     "\x58"
                                     "\x5d"
-                                    "\xc3"
+                                    "\xc3" // ret
                                 );
                                 return;
 
                                 // add ax, <data>
-        case BF_INSTR_RIGHT:    append_const("\x66\x05"); 
+        case BF_INSTR_RIGHT:    append_const("\x66\x81\xc1"); 
                                 append_int((*c_instruction)->repeat_for + 1, u_int16_t);
                                 break;
 
                                 // sub ax, <data>
-        case BF_INSTR_LEFT:     append_const("\x66\x2D");
+        case BF_INSTR_LEFT:     append_const("\x66\x81\xe9");
                                 append_int((*c_instruction)->repeat_for + 1, u_int16_t);
                                 break;
 
                                 // movzx rcx, byte [rbx+rax] 
-        case BF_INSTR_ADD:      append_const("\x48\x0f\xb6\x0c\x03");
-                                // add cx, <data>
-                                append_const("\x66\x81\xc1");
-                                append_int((*c_instruction)->repeat_for + 1, u_int16_t);
-                                // mov byte [rbx+rax], cl
-                                append_const("\x88\x0c\x03");
+        case BF_INSTR_ADD:      append_const("\x80\x04\x0b");
+                                append_int((*c_instruction)->repeat_for + 1, u_int8_t);
                                 break;
 
                                 // movzx rcx, byte [rbx+rax] 
-        case BF_INSTR_SUB:      append_const("\x48\x0f\xb6\x0c\x03");
-                                // sub cx, <data>
-                                append_const("\x66\x81\xe9");
-                                append_int((*c_instruction)->repeat_for + 1, u_int16_t);
-                                // mov byte [rbx+rax], cl
-                                append_const("\x88\x0c\x03");
+        case BF_INSTR_SUB:      append_const("\x80\x2c\x0b");
+                                append_int((*c_instruction)->repeat_for + 1, u_int8_t);
                                 break;
 
         case BF_INSTR_PUTC:     append_const(
-                                    // xor rsi, rsi
-                                    "\x48\x31\xf6"
-                                    // add rsi, rbx
-                                    "\x48\x01\xde"
-                                    // add rsi, rax
-                                    "\x48\x01\xc6"
+                                    // lea rsi, [rbx+rcx]
+                                    "\x48\x8d\x34\x0b"
                                     // mov rax, 0x1
                                     "\x48\xc7\xc0\x01\x00\x00\x00"
                                     // mov rdi, 0x1
                                     "\x48\xc7\xc7\x01\x00\x00\x00"
                                     // mov rdx,0x1
                                     "\x48\xc7\xc2\x01\x00\x00\x00"
+                                    // push rcx (gotta change register since this is being used by the syscall as well)
+                                    "\x51" 
                                     // syscall
                                     "\x0f\x05"
-                                    // sub rsi,rbx
-                                    "\x48\x29\xde"
-                                    // mov rax, rsi
-                                    "\x48\x89\xf0"
+                                    // pop rcx
+                                    "\x59"
+                                );
+                                break;
+
+        case BF_INSTR_GETC:     append_const(
+                                    // lea rsi, [rbx+rcx]
+                                    "\x48\x8d\x34\x0b"
+                                    // mov rax, 0x1
+                                    "\x48\xc7\xc0\x00\x00\x00\x00"
+                                    // mov rdi, 0x1
+                                    "\x48\xc7\xc7\x00\x00\x00\x00"
+                                    // mov rdx,0x1
+                                    "\x48\xc7\xc2\x01\x00\x00\x00"
+                                    // push rcx (gotta change register since this is being used by the syscall as well)
+                                    "\x51" 
+                                    // syscall
+                                    "\x0f\x05"
+                                    // pop rcx
+                                    "\x59"
                                 );
                                 break;
                     
@@ -91,8 +98,10 @@ void write_instructions(dynarray_t *array, bf_instruction_t **c_instruction) {
         case BF_INSTR_LOOP_S:   *c_instruction = &(*c_instruction)[1];
 
                                 append_const(
-                                    "\x48\x0f\xb6\x0c\x03"
-                                    "\x84\xc9"
+                                    // movzx rax, [rbx+rcx]
+                                    "\x48\x0f\xb6\x04\x0b" 
+                                    // test al, al
+                                    "\x84\xc0"
                                 )
 
                                 append_const("\x0f\x84");
@@ -113,7 +122,7 @@ void write_instructions(dynarray_t *array, bf_instruction_t **c_instruction) {
 
         case BF_INSTR_LOOP_E:   return;
         
-        case BF_OPT_LOOP_TO_ZERO: append_const("\xc6\x04\x03\x00");
+        case BF_OPT_LOOP_TO_ZERO: append_const("\xc6\x04\x0b\x00");
         }
         *c_instruction = &(*c_instruction)[1];
     }   
@@ -132,10 +141,10 @@ void bf_jit(bf_vm* vm, bf_instruction_t* c_instruction) {
         "\x53"          // push rbx
         "\x51"          // push rcx
         "\x52"          // push rdx
-        "\x57"
-        "\x56"
+        "\x57"          // push rdi
+        "\x56"          // push rsi
 
-        "\x48\x31\xc0"  // xor rax, raxc
+        "\x48\x31\xc9"  // xor rcx, rcx
     );
 
     // movabs rbx, <cells_address>
