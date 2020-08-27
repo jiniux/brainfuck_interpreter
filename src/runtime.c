@@ -25,16 +25,20 @@ static int find_cycle_end(bf_instruction_t* instructions, int count) {
 }
 
 void bf_routine(bf_vm *vm, bf_instruction_t *instr, u_int16_t index) {
+    // O(0) yeah boy.
     static void* jump_table[] = { 
-        &&LCONTINUE, &&LBF_INSTR_RIGHT, &&LBF_INSTR_LEFT,
+        &&LBF_INSTR_EMPTY, &&LBF_INSTR_RIGHT, &&LBF_INSTR_LEFT,
         &&LBF_INSTR_ADD, &&LBF_INSTR_SUB,
         &&LBF_INSTR_PUTC, &&LBF_INSTR_GETC,
         &&LBF_INSTR_LOOP_S, &&LBF_INSTR_LOOP_E,
         &&LBF_OPT_LOOP_TO_ZERO
     };
 
-    while (instr->type != BF_INSTR_EMPTY) {
+    for (; ;) {
         goto *jump_table[instr->type];
+
+        LBF_INSTR_EMPTY:   
+            break;
 
         LBF_INSTR_RIGHT:
             index += 1 + instr->repeat_for;

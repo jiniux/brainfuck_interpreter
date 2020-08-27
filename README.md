@@ -35,9 +35,9 @@ The following tests were conducted on an **Intel Core i7-7700k 4.20GHz** process
 
 | Program | Interpreter  | JIT compiled code |
 |---|---|---|
-| `mandelbrot.bf`  | `3.72s` | `1.42s` |
-| `hanoi.bf` | `0.37s` | `0.17s` |
-| `project_euler_1.bf` | `13.89s` | `4.78s` 
+| `mandelbrot.bf`  | `3.62s` | `1.42s` |
+| `hanoi.bf` | `0.32s` | `0.17s` |
+| `project_euler_1.bf` | `12.24s` | `4.78s` 
 
 ## Optimizations
 
